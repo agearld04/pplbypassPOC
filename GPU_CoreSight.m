@@ -52,22 +52,6 @@ void write_dword(uint64_t addr, uint32_t value) {
     *(uint32_t *)addr = value;
 }
 
-// ... (other read and write functions for quad words)
-
-// Function to calculate ECC based on the provided S-box and buffer
-uint32_t calculate_ecc(const uint8_t* buffer) {
-    uint32_t acc = 0;
-    for (int i = 0; i < 8; ++i) {
-        int pos = i * 4;
-        uint32_t value = read_dword((uint64_t)buffer + pos);
-        for (int j = 0; j < 32; ++j) {
-            if (((value >> j) & 1) != 0) {
-                acc ^= sbox[32 * i + j];
-            }
-        }
-    }
-    return acc;
-}
 
 // ... (other DMA control functions)
 
@@ -150,4 +134,21 @@ void KernelWrite(uint64_t addr, const void *buffer, size_t size) {
 int main() {
     pplwrite_test();
     return 0;
+}
+
+// ... (other read and write functions for quad words)
+
+// Function to calculate ECC based on the provided S-box and buffer
+uint32_t calculate_ecc(const uint8_t* buffer) {
+    uint32_t acc = 0;
+    for (int i = 0; i < 8; ++i) {
+        int pos = i * 4;
+        uint32_t value = read_dword((uint64_t)buffer + pos);
+        for (int j = 0; j < 32; ++j) {
+            if (((value >> j) & 1) != 0) {
+                acc ^= sbox[32 * i + j];
+            }
+        }
+    }
+    return acc;
 }
